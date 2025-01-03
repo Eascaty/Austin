@@ -13,7 +13,6 @@
         <module>austin-handler</module>
         <module>austin-cron</module>
         <module>austin-stream</module>
-        <module>austin-data-house</module>
     </modules>
 
     <parent>
@@ -42,7 +41,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--依赖库版本-->
-        <mysql-connector-java.version>5.1.35</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.31</mysql-connector-java.version>
         <hutool-all.version>5.7.15</hutool-all.version>
         <guava.version>31.0.1-jre</guava.version>
         <okhttp.version>4.9.2</okhttp.version>
@@ -82,11 +81,7 @@
                 <artifactId>austin-cron</artifactId>
                 <version>${revision}</version>
             </dependency>
-            <dependency>
-                <groupId>com.java3y.austin</groupId>
-                <artifactId>austin-data-house</artifactId>
-                <version>${revision}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.java3y.austin</groupId>
                 <artifactId>austin-handler</artifactId>

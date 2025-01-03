@@ -179,7 +179,8 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 测试是否安装成功：
 
 ```
-docker-compose --version
+
+
 ```
 
 （Austin项目的中间件使用docker进行部署，文件内容可以参考项目中`docker`文件夹)
