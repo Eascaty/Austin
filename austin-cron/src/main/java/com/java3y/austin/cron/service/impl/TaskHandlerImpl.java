@@ -1,23 +1,21 @@
 package com.java3y.austin.cron.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.text.csv.CsvRow;
-import com.java3y.austin.cron.csv.CountFileRowHandler;
-import com.java3y.austin.cron.pending.CrowdBatchTaskPending;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java3y.austin.cron.service.TaskHandler;
-import com.java3y.austin.cron.utils.ReadFileUtils;
-import com.java3y.austin.cron.vo.CrowdInfoVo;
 import com.java3y.austin.support.dao.MessageTemplateDao;
-import com.java3y.austin.support.domain.MessageTemplate;
 import com.java3y.austin.support.pending.AbstractLazyPending;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
+        ;
+
 
 /**
  * @author 3y
@@ -34,39 +32,41 @@ public class TaskHandlerImpl implements TaskHandler {
 
 
     @Override
-    public void handle(Long messageTemplateId) {
+    public void sendMessage(String url, Integer messageTemplateId, String receiver) {
 
-        MessageTemplate messageTemplate = messageTemplateDao.findById(messageTemplateId).orElse(null);
-        if (Objects.isNull(messageTemplate)) {
-            return;
-        }
-        if (CharSequenceUtil.isBlank(messageTemplate.getCronCrowdPath())) {
-            log.error("TaskHandler#handle crowdPath empty! messageTemplateId:{}", messageTemplateId);
-            return;
-        }
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("username", "JohnDoe");
+        Map<String, Object> extra = new HashMap<>();
+        extra.put("priority", "high");
 
-        // 1. 获取文件行数大小
-        long countCsvRow = ReadFileUtils.countCsvRow(messageTemplate.getCronCrowdPath(), new CountFileRowHandler());
+        String payload = createRequestPayload(messageTemplateId, receiver,variables, extra);
 
-        // 2. 读取文件得到每一行记录给到队列做lazy batch处理
-        CrowdBatchTaskPending crowdBatchTaskPending = context.getBean(CrowdBatchTaskPending.class);
-        ReadFileUtils.getCsvRow(messageTemplate.getCronCrowdPath(), row -> {
-            if (CollUtil.isEmpty(row.getFieldMap())
-                    || CharSequenceUtil.isBlank(row.getFieldMap().get(ReadFileUtils.RECEIVER_KEY))) {
-                return;
-            }
-
-            // 3. 每一行处理交给LazyPending
-            Map<String, String> params = ReadFileUtils.getParamFromLine(row.getFieldMap());
-            CrowdInfoVo crowdInfoVo = CrowdInfoVo.builder().receiver(row.getFieldMap().get(ReadFileUtils.RECEIVER_KEY))
-                    .params(params).messageTemplateId(messageTemplateId).build();
-            crowdBatchTaskPending.pending(crowdInfoVo);
-
-            // 4. 判断是否读取文件完成回收资源且更改状态
-            onComplete(row, countCsvRow, crowdBatchTaskPending, messageTemplateId);
-        });
     }
 
+    private String createRequestPayload(Integer messageTemplateId, String receiver, Map<String, Object> variables, Map<String, Object> extra) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // 构造请求体的顶层数据结构
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("code", "send");
+            payload.put("messageTemplateId", messageTemplateId);
+
+            // 构造 messageParam 对象
+            Map<String, Object> messageParam = new HashMap<>();
+            messageParam.put("bizId", null);
+            messageParam.put("receiver", receiver);
+            messageParam.put("variables", variables); // 支持动态变量
+            messageParam.put("extra", extra);         // 支持附加信息
+
+            payload.put("messageParam", messageParam);
+            payload.put("recallMessageIds", null);
+
+            // 转换为 JSON 字符串
+            return objectMapper.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to create request payload", e);
+        }
+    }
     /**
      * 文件遍历结束时
      * 1. 暂停单线程池消费(最后会回收线程池资源)

@@ -10,8 +10,8 @@ public interface TaskHandler {
     /**
      * 处理具体的逻辑
      *
-     * @param messageTemplateId
+     * @param  url, Integer messageTemplateId, String receiver
      */
-    void handle(Long messageTemplateId);
+    void sendMessage(String url, Integer messageTemplateId, String receiver);
 
 }

@@ -28,16 +28,28 @@ public class CronTaskHandler {
     private final DtpExecutor dtpExecutor = CronAsyncThreadPoolConfig.getXxlCronExecutor();
 
     /**
-     * 处理后台的 austin 定时任务消息
+     * 处理后台的 Austin 定时任务消息
+     *
+     * @param url 请求地址
+     * @param messageTemplateId 消息模板 ID
+     * @param receiver 接收者
      */
     @XxlJob("austinJob")
-    public void execute() {
-        log.info("CronTaskHandler#execute messageTemplateId:{} cron exec!", XxlJobHelper.getJobParam());
-        threadPoolUtils.register(dtpExecutor);
+    public void execute(String url, Integer messageTemplateId, String receiver) {
+        log.info("定时任务开始，准备向 Austin 接口发送消息");
 
-        Long messageTemplateId = Long.valueOf(XxlJobHelper.getJobParam());
-        dtpExecutor.execute(() -> taskHandler.handle(messageTemplateId));
-
+        try {
+            // 将任务提交到自定义线程池中执行
+            dtpExecutor.execute(() -> {
+                try {
+                    taskHandler.sendMessage(url, messageTemplateId, receiver);
+                    log.info("消息发送成功");
+                } catch (Exception e) {
+                    log.error("消息发送失败", e);
+                }
+            });
+        } catch (Exception e) {
+            log.error("任务提交线程池失败", e);
+        }
     }
-
 }
