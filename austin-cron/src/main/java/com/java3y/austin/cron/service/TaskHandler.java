@@ -1,5 +1,7 @@
 package com.java3y.austin.cron.service;
 
+import com.java3y.austin.cron.entity.AustinTask;
+
 /**
  * @author 3y
  * @date 2022/2/9
@@ -12,6 +14,6 @@ public interface TaskHandler {
      *
      * @param  url, Integer messageTemplateId, String receiver
      */
-    void sendMessage(String url, Integer messageTemplateId, String receiver);
+    String sendMessage(AustinTask task);
 
 }
