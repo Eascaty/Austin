@@ -1,0 +1,62 @@
+{
+  "type": "page",
+  "body": [
+    {
+      "type": "form",
+      "title": "过滤条件",
+      "target": "chart1",
+      "submitOnInit": true,
+      "className": "m-b",
+      "wrapWithPanel": false,
+      "reload": "chart1",
+      "body": [
+        {
+          "type": "input-text",
+          "label": "输入模板Id：",
+          "name": "name",
+          "addOn": {
+            "type": "submit",
+            "label": "查询",
+            "level": "primary"
+          },
+          "size": "lg",
+          "mode": "",
+          "description": "",
+          "placeholder": "查询非当天模板数据，输入businessId"
+        },
+        {
+          "type": "static",
+          "description": "<font color=\"#990000\">businessId=模板类型+模板ID+当天日期</br>eg:2000044620230129</br>前2位为模板类型：10、定时类的模板(后台定时调用) 20、实时类的模板(接口实时调用)</br>中间6位为模板Id：446为模板Id，不够6位在前面补0</br>后8位为下发的日期：20230129</br>(固定16位)</font>"
+        }
+      ],
+      "actions": []
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "grid",
+      "className": "m-t-lg",
+      "columns": [
+        {
+          "body": [
+            {
+              "type": "chart",
+              "name": "chart1",
+              "initFetch": false,
+              "replaceChartOption": true,
+              "clearPersistDataAfterSubmit": true,
+              "api": {
+                "url": "${ls:backend_url}/trace/messageTemplate",
+                "method": "post",
+                "data": {
+                  "businessId": "${name}"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
