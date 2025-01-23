@@ -142,6 +142,7 @@ public class MessageTemplateController {
         MessageParam messageParam = MessageParam.builder().receiver(messageTemplateParam.getReceiver()).variables(variables).build();
         SendRequest sendRequest = SendRequest.builder().code(BusinessCode.COMMON_SEND.getCode()).messageTemplateId(messageTemplateParam.getId()).messageParam(messageParam).build();
 //      SendRequest(code=send, messageTemplateId=2, messageParam=MessageParam(bizId=null, receiver=510252916@qq.com, variables={title=开发邮件, content=龙哥上午好, url=下午好}, extra=null), recallMessageIds=null)
+//        SendRequest(code=send, messageTemplateId=1, messageParam=MessageParam(bizId=null, receiver=17362974546, variables=null, extra=null), recallMessageIds=null)
         SendResponse response = sendService.send(sendRequest);
         if (!Objects.equals(response.getCode(), RespStatusEnum.SUCCESS.getCode())) {
             throw new CommonException(response.getMsg());

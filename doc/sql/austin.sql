@@ -68,3 +68,24 @@ CREATE TABLE IF NOT EXISTS `channel_account`
     KEY `idx_send_channel` (`send_channel`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='渠道账号信息';
+
+-- auto-generated definition
+create table austin_task
+(
+    id                  bigint auto_increment comment '主键，唯一标识每一条任务记录'
+        primary key,
+    message_template_id int                                 not null comment '消息模板 ID，表示使用的消息模板的 ID',
+    receiver            varchar(255)                        not null comment '接收者，存储消息的接收者邮箱或其他标识（例如手机号）',
+    variables           json                                null comment '动态变量，存储与消息相关的变量，可以使用 JSON 格式存储任意自定义的键值对',
+    extra               json                                null comment '附加信息，存储与任务相关的其他附加信息，也采用 JSON 格式存储',
+    flag                tinyint   default 0                 null comment '状态标志位，0 表示任务未处理，1 表示任务已处理（可以根据任务执行状态设置）',
+    create_time         timestamp default CURRENT_TIMESTAMP null comment '创建时间，记录任务创建的时间，默认为当前时间',
+    update_time         timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间，记录任务最后更新时间，默认为当前时间，并且在每次更新时自动更新时间',
+    backup_1            varchar(255)                        null comment '备用字段 1，用于存储额外的信息或未来扩展',
+    backup_2            varchar(255)                        null comment '备用字段 2，用于存储额外的信息或未来扩展',
+    backup_3            varchar(255)                        null comment '备用字段 3，用于存储额外的信息或未来扩展',
+    backup_4            varchar(255)                        null comment '备用字段 4，用于存储额外的信息或未来扩展',
+    backup_5            varchar(255)                        null comment '备用字段 5，用于存储额外的信息或未来扩展'
+)
+    comment 'austin_task 表，存储任务数据，包括消息模板、接收者、任务处理状态等信息';
+

@@ -36,6 +36,7 @@ public class SendServiceImpl implements SendService {
     public SendResponse send(SendRequest sendRequest) {
 //        SendRequest(code=send, messageTemplateId=5, messageParam=MessageParam(bizId=null, receiver=15158288810, variables=null, extra=null), recallMessageIds=null)
 //        SendRequest(code=send, messageTemplateId=3, messageParam=MessageParam(bizId=null, receiver=510252916@qq.com, variables={}, extra=null), recallMessageIds=null)
+//        SendRequest(code=send, messageTemplateId=1, messageParam=MessageParam(bizId=null, receiver=17362974546, variables=null, extra=null), recallMessageIds=null)
         if (ObjectUtils.isEmpty(sendRequest)) {
             return new SendResponse(RespStatusEnum.CLIENT_BAD_PARAMETERS.getCode(), RespStatusEnum.CLIENT_BAD_PARAMETERS.getMsg(), null);
         }

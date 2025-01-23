@@ -78,6 +78,7 @@ public class SmsHandler extends BaseHandler{
              * 1、动态配置做流量负载
              * 2、发送短信
              */
+//            TaskInfo(bizId=03RUa2l7fodZPcfvFM_Uv, messageId=03RUa2l7fodZPcfvFM_Uv, messageTemplateId=1, businessId=2000000120250123, receiver=[17362974546], idType=30, sendChannel=30, templateType=20, msgType=30, shieldType=10, contentModel=SmsContentModel(content=1234, url=null), sendAccount=4)
             List<MessageTypeSmsConfig> messageTypeSmsConfigs = serviceLoadBalancer.selectService(getMessageTypeSmsConfig(taskInfo), loadBalancerStrategy);
             for (MessageTypeSmsConfig messageTypeSmsConfig : messageTypeSmsConfigs) {
                 smsParam.setScriptName(messageTypeSmsConfig.getScriptName());
